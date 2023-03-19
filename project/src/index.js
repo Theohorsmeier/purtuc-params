@@ -10,6 +10,10 @@ const palettes = [
     name: "Kerk",
     colors: [ 0xaaaaaa, 0x0059ff, 0xff5000, 0xffffff, 0x000000 ]
   },
+  {    
+    name: "Koffie",
+    colors: ['#4bb18f', '#c5342f', '#d9c8a7', '#3d230d', '#93bfa4']
+  },
   {
     name: "Zondag",
     colors: [ 0xaaaaaa, 0x00ffea, 0xce00ff, 0xffffff, 0x000000 ]
@@ -158,9 +162,7 @@ const scene = new THREE.Scene()
 const geometry = new THREE.BoxGeometry(5,5,5)
 const meshes = []
 for (let index = 0; index < palettes[pallette_index].colors.length; index++) {
-  console.log('pick?',$fx.getParam("colorPick"))
-  console.log('pick',$fx.getParam("colorPick") ? $fx.getParam("color"+(index+1)) : palettes[pallette_index].colors[index])
-  const color = new THREE.Color($fx.getParam("colorPick") ? $fx.getParam("color"+(index+1)) : palettes[pallette_index].colors[index])
+  const color = new THREE.Color($fx.getParam("colorPick") ? $fx.getParam("color"+(index+1)).hex.rgb : palettes[pallette_index].colors[index])
   const material = new THREE.MeshBasicMaterial(
     {
       color:color
