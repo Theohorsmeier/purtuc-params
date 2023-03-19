@@ -1,14 +1,19 @@
-html {
-	background: white;
-	height: 100%;
+*
+{
+    margin: 0;
+    padding: 0;
 }
 
-body {
-	height: 100%;	
-	margin: 0;
-	padding: 10px;
+html,
+body
+{
+    overflow: hidden;
 }
 
-p {
-	margin: 0;
+.webgl
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
 }
