@@ -11,6 +11,22 @@ const palettes = [
     colors: [ 0xaaaaaa, 0x0059ff, 0xff5000, 0xffffff, 0x000000 ]
   },
   {    
+    name: "Findus",
+    colors: ['#49270b', '#f7e0c0', '#a57439', '#b1e8ed', '#bb6937']
+  },
+  {    
+    name: "Bos",
+    colors: ['#f6e756', '#c0da39', '#528504', '#f75608', '#6a530f']
+  },
+  {    
+    name: "HuKerk",
+    colors: ['#f2e3c6', '#655139', '#1bb8fb', '#ff513e', '#bcd728']
+  },
+  {    
+    name: "Paars",
+    colors: ['#7659ab', '#c755c4', '#ff6e73', '#fe734a', '#ffc245']
+  },
+  {    
     name: "Koffie",
     colors: ['#4bb18f', '#c5342f', '#d9c8a7', '#3d230d', '#93bfa4']
   },
@@ -123,21 +139,14 @@ $fx.params([
   },
 ])
 
-console.log("colors",
-[
-  $fx.getParam("color1").hex.rgb,
-  $fx.getParam("color2").hex.rgb,
-  $fx.getParam("color3").hex.rgb,
-  $fx.getParam("color4").hex.rgb,
-  $fx.getParam("color5").hex.rgb,
-]);
+
 
 $fx.features({
   "Palette": $fx.getParam("palette_id"),
 })
 
 /**
- * Do I want these to be params too????
+ * Other Parameters for scene
  */
 
 const particleSmallSpread = 0.1
@@ -151,9 +160,112 @@ const offsetLerpFactor = helper.FXRandomBetween(0,1)
 const lineLerpFactor = helper.FXRandomBetween(0,1)
 
 /**
+ * Start end, and control points for start and end
+ */
+
+const bezierStartQuadrant = [
+  helper.FXRandomBool(0.5),
+  helper.FXRandomBool(0.5),
+  helper.FXRandomBool(0.5)
+]
+
+const bezierEndQuadrant = [
+    !bezierStartQuadrant[0],
+    !bezierStartQuadrant[1],
+    !bezierStartQuadrant[2]
+]
+
+const bezierStartPoint = [
+    (bezierStartQuadrant[0] ? 1 : -1 ) * helper.FXRandomBetween(0,1) * bezierRadius,
+    (bezierStartQuadrant[1] ? 1 : -1 ) * helper.FXRandomBetween(0,1) * bezierRadius,
+    (bezierStartQuadrant[2] ? 1 : -1 ) * helper.FXRandomBetween(0,1) * bezierRadius,
+]
+
+const bezierEndPoint = [
+    (bezierEndQuadrant[0] ? 1 : -1 ) * helper.FXRandomBetween(0,1) * bezierRadius,
+    (bezierEndQuadrant[1] ? 1 : -1 ) * helper.FXRandomBetween(0,1) * bezierRadius,
+    (bezierEndQuadrant[2] ? 1 : -1 ) * helper.FXRandomBetween(0,1) * bezierRadius,
+]
+
+const bezierControl1 = [
+    helper.FXRandomBetween(-1,1) * bezierControlRadius,
+    helper.FXRandomBetween(-1,1) * bezierControlRadius,
+    helper.FXRandomBetween(-1,1) * bezierControlRadius
+]
+
+const bezierControl2 = [
+    helper.FXRandomBetween(-1,1) * bezierControlRadius,
+    helper.FXRandomBetween(-1,1) * bezierControlRadius,
+    helper.FXRandomBetween(-1,1) * bezierControlRadius
+]
+
+/**
+ * Arrays for point info
+ */
+
+const palette_index = paletteNames.indexOf($fx.getParam("palette_id"))
+
+const palettePicks = palettes[palette_index].colors
+const colorPicks = [
+  $fx.getParam("color1").hex.rgb,
+  $fx.getParam("color2").hex.rgb,
+  $fx.getParam("color3").hex.rgb,
+  $fx.getParam("color4").hex.rgb,
+  $fx.getParam("color5").hex.rgb,
+]
+
+console.log("colors",colorPicks)
+console.log("palette",palettePicks)
+const palettePick = $fx.getParam("colorPick") ? colorPicks : palettePicks
+
+const shuffledPalette = palettePick.sort((a, b) => 0.5 - fxrand());
+
+const wrapMin = []
+const wrapMax = []
+const color1 = []
+const color2 = []
+
+const wrapAngle = []
+
+
+
+const wrapBool = helper.FXRandomBool(0.5)
+const numBez = $fx.getParam("numberOfBezierCurves")
+for (let index = 0; index < $fx.getParam("numberOfBezierCurves"); index++) {
+  if (index < this.numBez / 4){
+      wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*(index/numBez)
+      wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*(index/numBez)
+      color1[index] =  shuffledPalette[1]
+      color2[index] =  shuffledPalette[2]
+      wrapAngle[index] = 1.0 * wrapBool
+      
+  } else if(index < 2 * numBez / 4) {
+      wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-numBez/4)/numBez))
+      wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-numBez/4)/numBez))
+      color1[index] = shuffledPalette[3]
+      color2[index] = shuffledPalette[1]
+      wrapAngle[index] = 1.0 * wrapBool
+  } else if (index < 3 * this.numBez / 4){
+      wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*((index - numBez/2)/numBez)
+      wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index - numBez/2)/numBez)
+      color1[index] = shuffledPalette[4]
+      color2[index] = shuffledPalette[2]
+      wrapAngle[index] = -1.0 * wrapBool
+      
+  } else  {
+      wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-3 * numBez/4)/this.numBez))
+      wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-3 * numBez/4)/this.numBez))
+      color1[index] = shuffledPalette[3]
+      color2[index] = shuffledPalette[4]
+      wrapAngle[index] = -1.0 * wrapBool
+  }
+}
+
+
+/**
  * Setup the scene
 */
-const pallette_index = paletteNames.indexOf($fx.getParam("palette_id"))
+
 
 const canvas = document.querySelector('canvas.webgl')
 
@@ -161,8 +273,8 @@ const scene = new THREE.Scene()
 
 const geometry = new THREE.BoxGeometry(5,5,5)
 const meshes = []
-for (let index = 0; index < palettes[pallette_index].colors.length; index++) {
-  const color = new THREE.Color($fx.getParam("colorPick") ? $fx.getParam("color"+(index+1)).hex.rgb : palettes[pallette_index].colors[index])
+for (let index = 0; index < palettes[palette_index].colors.length; index++) {
+  const color = new THREE.Color(shuffledPalette[index])
   const material = new THREE.MeshBasicMaterial(
     {
       color:color
@@ -177,7 +289,9 @@ for (let index = 0; index < palettes[pallette_index].colors.length; index++) {
 
 
 
-
+/**
+ * Sizes, Camera, Render
+ */
 const sizes = {
   width       : window.innerWidth,
   height      : window.innerHeight,
@@ -223,23 +337,22 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+
+
+/**
+ * Animation
+ */
 const clock = new THREE.Clock()
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    // mesh.rotation.z += 0.01
 
 
 
-    // Update controls
     controls.update()
-
-    // Render
     renderer.render(scene, camera)
-
-    // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
 
