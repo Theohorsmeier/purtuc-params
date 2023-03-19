@@ -261,6 +261,25 @@ for (let index = 0; index < $fx.getParam("numberOfBezierCurves"); index++) {
   }
 }
 
+/**
+ * Offsets
+ */
+const randomVecMiddle = (mul = 1) => 
+{
+  return [
+    mul * helper.FXRandomBetween(-1,1),
+    mul * helper.FXRandomBetween(-1,1),
+    mul * helper.FXRandomBetween(-1,1)
+  ]
+}
+
+const offsets = [
+  randomVecMiddle(),
+  randomVecMiddle(),
+  randomVecMiddle(0.01),
+  randomVecMiddle(0.01)
+]
+
 
 /**
  * Setup the scene
@@ -270,6 +289,7 @@ for (let index = 0; index < $fx.getParam("numberOfBezierCurves"); index++) {
 const canvas = document.querySelector('canvas.webgl')
 
 const scene = new THREE.Scene()
+scene.background = new THREE.Color( shuffledPalette[0] )
 
 const geometry = new THREE.BoxGeometry(5,5,5)
 const meshes = []
