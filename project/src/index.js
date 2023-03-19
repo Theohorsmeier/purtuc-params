@@ -105,9 +105,28 @@ $fx.params([
     options: {
       options: paletteNames,
     }
-  }
+  },
+  //FOR TESTING AND GENERATING PALETTES ONLY
+  {id: "color1",name: "Color 1",type: "color"},
+  {id: "color2",name: "Color 2",type: "color"},
+  {id: "color3",name: "Color 3",type: "color"},
+  {id: "color4",name: "Color 4",type: "color"},
+  {id: "color5",name: "Color 5",type: "color"},
+  {
+    id: "colorPick",
+    name: "Use custom colors",
+    type: "boolean",
+  },
 ])
 
+console.log("colors",
+[
+  $fx.getParam("color1").hex.rgb,
+  $fx.getParam("color2").hex.rgb,
+  $fx.getParam("color3").hex.rgb,
+  $fx.getParam("color4").hex.rgb,
+  $fx.getParam("color5").hex.rgb,
+]);
 
 $fx.features({
   "Palette": $fx.getParam("palette_id"),
@@ -139,7 +158,13 @@ const scene = new THREE.Scene()
 const geometry = new THREE.BoxGeometry(5,5,5)
 const meshes = []
 for (let index = 0; index < palettes[pallette_index].colors.length; index++) {
-  const material = new THREE.MeshBasicMaterial({color: palettes[pallette_index].colors[index]})
+  console.log('pick?',$fx.getParam("colorPick"))
+  console.log('pick',$fx.getParam("colorPick") ? $fx.getParam("color"+(index+1)) : palettes[pallette_index].colors[index])
+  const color = new THREE.Color($fx.getParam("colorPick") ? $fx.getParam("color"+(index+1)) : palettes[pallette_index].colors[index])
+  const material = new THREE.MeshBasicMaterial(
+    {
+      color:color
+    })
   const mesh = new THREE.Mesh(geometry,material)
   mesh.position.x = index*5
   meshes.push(mesh)
