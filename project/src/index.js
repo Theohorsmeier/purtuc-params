@@ -8,7 +8,7 @@ import * as helper from "@liamegan1/fxhash-helpers"
 const palettes = [  
   {    
     name: "Kerk",
-    colors: [ 0xaaaaaa, 0x0059ff, 0xff5000, 0xffffff, 0x000000 ]
+    colors: [ "#aaaaaa", "#0059ff", "#ff5000", "#ffffff", "#000000" ]
   },
   {    
     name: "Findus",
@@ -32,11 +32,11 @@ const palettes = [
   },
   {
     name: "Zondag",
-    colors: [ 0xaaaaaa, 0x00ffea, 0xce00ff, 0xffffff, 0x000000 ]
+    colors: [ "#aaaaaa", "#00ffea", "#ce00ff", "#ffffff", "#000000" ]
   },
   {
     name: "Ontvreemd",
-    colors: [ 0x00adff, 0xff001a, 0xaaaaaa, 0xffffff, 0x000000 ]
+    colors: [ "#00adff", "#ff001a", "#aaaaaa", "#ffffff", "#000000" ]
   },
   {
     name: "Analogous",
