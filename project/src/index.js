@@ -40,15 +40,15 @@ const palettes = [
   },
   {
     name: "Analogous",
-    colors: [ 0xFFC300, 0xFF5733, 0xC70039, 0x900C3F, 0x581845 ]
+    colors: [ "#0xFFC300", "#0xFF5733", "#0xC70039", "#0x900C3F", "#0x581845" ]
   },
   {
     name: "Complementary",
-    colors: [ 0xFF4136, 0x0074D9, 0xFFDC00, 0x001f3f, 0x3D9970 ]
+    colors: [ "#0xFF4136", "#0x0074D9", "#0xFFDC00", "#0x001f3f", "#0x3D9970" ]
   },
   {
     name: "Monochromatic",
-    colors: [ 0xF7F7F7, 0xD9D9D9, 0xA7A7A7, 0x737373, 0x404040 ]
+    colors: [ "#0xF7F7F7", "#0xD9D9D9", "#0xA7A7A7", "#0x737373", "#0x404040" ]
   }
 ];
 
@@ -280,7 +280,22 @@ const offsets = [
   randomVecMiddle(0.01)
 ]
 
+const center = new THREE.Vector3()
 
+const geometries = []
+const beziers = []
+const lines = []
+const smallOffsets = []
+const largeOffsets = []
+const factors = []
+const points = [] 
+
+for (let i = 0; i < $fx.getParam("curveCount"); i++) {
+  addBezierParticles(i)
+  geometries[i].computeBoundingSphere()
+  const centerLoc = geometries[i].boundingSphere.center
+  center.addScaledVector(centerLoc,1/$fx.getParam("curveCount"))
+}
 /**
  * Setup the scene
 */
