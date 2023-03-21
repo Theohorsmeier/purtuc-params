@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as helper from "@liamegan1/fxhash-helpers"
+import vertex from './Shaders/particles-vertex.glsl'
+import fragment from './Shaders/particles-fragment.glsl'
 
 /**
  * Palettes
@@ -54,27 +56,21 @@ const palettes = [
 
 const paletteNames = palettes.map(p => p.name)
 
-/**
- * Params
- * - Palette
- * - Wrap ranges
- * - Total Lines
- * - Total Particles (max 100.000)
- * - Sections (min 2, max 8?)
- * - Sprayfactor
- * - Linefactor
- *  
- * Features not params:
- * - rotation direction?(xyz increments)
- */
 
 $fx.params([
   {
     id: "particleCount",
-    name: "Particles",
+    name: "ParticleCount",
     type: "number",
     default: 1000000,
     options: { min: 1000,max: 10000000,step: 1000 },
+  },
+  {
+    id: "particleSize",
+    name: "ParticleSize",
+    type: "number",
+    default: 30,
+    options: { min: 1,max: 100,step: 1 },
   },
   {
     id: "curveCount",
@@ -280,18 +276,162 @@ const offsets = [
   randomVecMiddle(0.01)
 ]
 
+const linePoint = (start,end,factor) => 
+{
+  let vector = new THREE.Vector3()
+        
+  return vector.lerpVectors(start, end, factor)
+}
+
+const particlePointSpray = ( factor , spread, power) =>
+{
+    
+    const s = helper.FXRandomBetween(0,2*Math.PI)
+    const t = helper.FXRandomBetween(0,Math.PI)
+    const radius = spread *  Math.pow(helper.FXRandomBetween(0,1),power)
+
+    const spray = new THREE.Vector3(
+        radius * Math.cos(s) * Math.sin(t) ,
+        radius * Math.sin(s) * Math.sin(t),
+        radius * Math.cos(t) 
+    )
+
+    return spray
+}
+
 const center = new THREE.Vector3()
 
 const geometries = []
-const beziers = []
-const lines = []
+const materials = []
+const bezierPoints = []
+const bezierPositions = []
+const linePositions = []
 const smallOffsets = []
 const largeOffsets = []
 const factors = []
-const points = [] 
+
+const curveCount = $fx.getParam("curveCount")
+const particleCount = $fx.getParam("particleCount")
+const countPerCurve = particleCount/curveCount
+
+const setupBuffers = (i) => 
+{
+  
+  bezierPositions[i] = new Float32Array(countPerCurve * 3)
+  linePositions[i] = new Float32Array(countPerCurve * 3)
+  smallOffsets[i] = new Float32Array(countPerCurve * 3)
+  largeOffsets[i] = new Float32Array(countPerCurve * 3)
+  factors[i] = new Float32Array(countPerCurve * 1)
+}
+const generateBezierPoints = (i) => {
+  const start = new THREE.Vector3(
+    bezierStartPoint[0] + i * offsets[0],
+    bezierStartPoint[1] + i * offsets[1],
+    bezierStartPoint[2] + i * offsets[2]
+  )
+
+  const end = new THREE.Vector3(
+    bezierEndPoint[0] + i * offsets[0],
+    bezierEndPoint[1] + i * offsets[1],
+    bezierEndPoint[2] + i * offsets[2]
+  )
+
+  const bezierCurve = new THREE.CubicBezierCurve3(
+    start,
+    new THREE.Vector3(
+      bezierControl1[0] + i * offsets[0],
+      bezierControl1[1] + i * offsets[1],
+      bezierControl1[2] + i * offsets[2]
+    ),
+
+    new THREE.Vector3(
+      bezierControl2[0] + i * offsets[0],
+      bezierControl2[1] + i * offsets[1],
+      bezierControl2[2] + i * offsets[2]
+    ),
+    end
+  )
+  bezierPoints[i] = bezierCurve.getPoints( countPerCurve )
+
+}
+const generateParticles = (index) => {
+  geometries[index] = new THREE.BufferGeometry()
+  materials[index] = new THREE.ShaderMaterial({
+    vertexShader: vertex,
+    fragmentShader: fragment,
+    uniforms:
+    {
+        uSize: { value: $fx.getParam("particleSize")  },
+        uTime: {value: 0},
+        uWrapMin: {value: wrapMin[index]},
+        uWrapMax: {value: wrapMax[index]},
+        uWrapAngle: {value: wrapAngle[index]},
+        uWrapFactor:  {value: $fx.getParam("wrapFactor")},
+        uColor1: {value: color1[index]},
+        uColor2: {value: color2[index]},
+        uOffsetLerpFactor: {value: $fx.getParam("offsetLerpFactor")},
+        uLineLerpFactor: {value: $fx.getParam("lineLerpFactor")},
+        
+    },
+    depthWrite: false,
+    // blending: THREE.AdditiveBlending,
+    vertexColors: true
+})
+
+  for(let i = 0; i < countPerCurve; i++)
+  {
+      const i3 = i * 3
+      const factor = i / countPerCurve
+      
+
+      this.factors[index][i] = factor;
+
+      const bezierPoint = this.bezierPoints[i]
+      const line = this.linePoint(this.start,this.end, factor)
+      const spraySmall = this.particlePointSpray( factor, this.features.particleSmallSpread,this.features.particleSmallPower )
+      const sprayLarge = this.particlePointSpray( factor, this.features.particleLargeSpread,this.features.particleLargePower )
+      
+      this.bezierPositions[i3    ] = bezierPoint.x
+      this.bezierPositions[i3 + 1] = bezierPoint.y
+      this.bezierPositions[i3 + 2] = bezierPoint.z
+      
+      
+      
+      this.linePositions[i3    ] = line.x
+      this.linePositions[i3 + 1] = line.y
+      this.linePositions[i3 + 2] = line.z
+      
+      this.smallOffsets[i3    ] = spraySmall.x
+      this.smallOffsets[i3 + 1] = spraySmall.y
+      this.smallOffsets[i3 + 2] = spraySmall.z
+      
+      this.largeOffsets[i3    ] = sprayLarge.x
+      this.largeOffsets[i3 + 1] = sprayLarge.y
+      this.largeOffsets[i3 + 2] = sprayLarge.z
+
+  }
+
+        
+
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(this.bezierPositions, 3))
+        this.geometry.setAttribute('aFactor', new THREE.BufferAttribute(this.factors, 1))
+        this.geometry.setAttribute('aLinePosition', new THREE.BufferAttribute(this.linePositions, 3))
+        this.geometry.setAttribute('aSmallOffset', new THREE.BufferAttribute(this.smallOffsets, 3))
+        this.geometry.setAttribute('aLargeOffset', new THREE.BufferAttribute(this.largeOffsets, 3))
+    
+        this.points = new THREE.Points(this.geometry, this.material)
+        this.scene.add(this.points)
+}
+
+
+
+
 
 for (let i = 0; i < $fx.getParam("curveCount"); i++) {
-  addBezierParticles(i)
+  setupBuffers(i)
+  generateBezierPoints(i)
+  generateParticles(i)
+
   geometries[i].computeBoundingSphere()
   const centerLoc = geometries[i].boundingSphere.center
   center.addScaledVector(centerLoc,1/$fx.getParam("curveCount"))
@@ -306,21 +446,7 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 scene.background = new THREE.Color( shuffledPalette[0] )
 
-const geometry = new THREE.BoxGeometry(5,5,5)
-const meshes = []
-for (let index = 0; index < palettes[palette_index].colors.length; index++) {
-  const color = new THREE.Color(shuffledPalette[index])
-  const material = new THREE.MeshBasicMaterial(
-    {
-      color:color
-    })
-  const mesh = new THREE.Mesh(geometry,material)
-  mesh.position.x = index*5
-  meshes.push(mesh)
 
-  scene.add(mesh)
-  
-}
 
 
 
