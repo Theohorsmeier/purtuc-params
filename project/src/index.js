@@ -10,47 +10,47 @@ import fragment from './Shaders/particles-fragment.glsl'
 const palettes = [  
   {    
     name: "Kerk",
-    colors: [ "#aaaaaa", "#0059ff", "#ff5000", "#ffffff", "#000000" ]
+    colors: [ 0xaaaaaa, 0x0059ff, 0xff5000, 0xffffff, 0x000000 ]
   },
   {    
     name: "Findus",
-    colors: ['#49270b', '#f7e0c0', '#a57439', '#b1e8ed', '#bb6937']
+    colors: [0x49270b, 0xf7e0c0, 0xa57439, 0xb1e8ed, 0xbb6937]
   },
   {    
     name: "Bos",
-    colors: ['#f6e756', '#c0da39', '#528504', '#f75608', '#6a530f']
+    colors: [0xf6e756, 0xc0da39, 0x528504, 0xf75608, 0x6a530f]
   },
   {    
     name: "HuKerk",
-    colors: ['#f2e3c6', '#655139', '#1bb8fb', '#ff513e', '#bcd728']
+    colors: [0xf2e3c6, 0x655139, 0x1bb8fb, 0xff513e, 0xbcd728]
   },
   {    
     name: "Paars",
-    colors: ['#7659ab', '#c755c4', '#ff6e73', '#fe734a', '#ffc245']
+    colors: [0x7659ab, 0xc755c4, 0xff6e73, 0xfe734a, 0xffc245]
   },
   {    
     name: "Koffie",
-    colors: ['#4bb18f', '#c5342f', '#d9c8a7', '#3d230d', '#93bfa4']
+    colors: [0x4bb18f, 0xc5342f, 0xd9c8a7, 0x3d230d, 0x93bfa4]
   },
   {
     name: "Zondag",
-    colors: [ "#aaaaaa", "#00ffea", "#ce00ff", "#ffffff", "#000000" ]
+    colors: [ 0xaaaaaa, 0x00ffea, 0xce00ff, 0xffffff, 0x000000 ]
   },
   {
     name: "Ontvreemd",
-    colors: [ "#00adff", "#ff001a", "#aaaaaa", "#ffffff", "#000000" ]
+    colors: [ 0x00adff, 0xff001a, 0xaaaaaa, 0xffffff, 0x000000 ]
   },
   {
     name: "Analogous",
-    colors: [ "#0xFFC300", "#0xFF5733", "#0xC70039", "#0x900C3F", "#0x581845" ]
+    colors: [ 0xFFC300, 0xFF5733, 0xC70039, 0x900C3F, 0x581845 ]
   },
   {
     name: "Complementary",
-    colors: [ "#0xFF4136", "#0x0074D9", "#0xFFDC00", "#0x001f3f", "#0x3D9970" ]
+    colors: [ 0xFF4136, 0x0074D9, 0xFFDC00, 0x001f3f, 0x3D9970 ]
   },
   {
     name: "Monochromatic",
-    colors: [ "#0xF7F7F7", "#0xD9D9D9", "#0xA7A7A7", "#0x737373", "#0x404040" ]
+    colors: [ 0xF7F7F7, 0xD9D9D9, 0xA7A7A7, 0x737373, 0x404040 ]
   }
 ];
 
@@ -62,7 +62,7 @@ $fx.params([
     id: "particleCount",
     name: "ParticleCount",
     type: "number",
-    default: 1000000,
+    default: 1000,
     options: { min: 1000,max: 10000000,step: 1000 },
   },
   {
@@ -152,11 +152,16 @@ const bezierControlRadius = 10
 const particleSmallPower = 5
 const particleLargePower = 2
 
+const wrapMinStart = $fx.getParam("wrapMinStart")            
+const wrapMinEnd   = $fx.getParam("wrapMinEnd")          
+const wrapMaxStart = $fx.getParam("wrapMaxStart")            
+const wrapMaxEnd   = $fx.getParam("wrapMaxEnd")          
+
 const offsetLerpFactor = helper.FXRandomBetween(0,1) 
 const lineLerpFactor = helper.FXRandomBetween(0,1)
 
 /**
- * Start end, and control points for start and end
+ * Start end, and control points for bezier
  */
 
 const bezierStartQuadrant = [
@@ -226,33 +231,37 @@ const wrapAngle = []
 
 
 const wrapBool = helper.FXRandomBool(0.5)
-const numBez = $fx.getParam("numberOfBezierCurves")
-for (let index = 0; index < $fx.getParam("numberOfBezierCurves"); index++) {
-  if (index < this.numBez / 4){
-      wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*(index/numBez)
-      wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*(index/numBez)
-      color1[index] =  shuffledPalette[1]
-      color2[index] =  shuffledPalette[2]
+const curveCount = $fx.getParam("curveCount")
+const particleCount = $fx.getParam("particleCount")
+const countPerCurve = particleCount/curveCount
+
+
+for (let index = 0; index < curveCount; index++) {
+  if (index < curveCount / 4){
+      wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*(index/curveCount)
+      wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*(index/curveCount)
+      color1[index] =  new THREE.Color( shuffledPalette[1] )
+      color2[index] =  new THREE.Color( shuffledPalette[2] )
       wrapAngle[index] = 1.0 * wrapBool
       
-  } else if(index < 2 * numBez / 4) {
-      wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-numBez/4)/numBez))
-      wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-numBez/4)/numBez))
-      color1[index] = shuffledPalette[3]
-      color2[index] = shuffledPalette[1]
+  } else if(index < 2 * curveCount / 4) {
+      wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-curveCount/4)/curveCount))
+      wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-curveCount/4)/curveCount))
+      color1[index] = new THREE.Color( shuffledPalette[3] )
+      color2[index] = new THREE.Color( shuffledPalette[1] )
       wrapAngle[index] = 1.0 * wrapBool
-  } else if (index < 3 * this.numBez / 4){
-      wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*((index - numBez/2)/numBez)
-      wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index - numBez/2)/numBez)
+  } else if (index < 3 * curveCount / 4){
+      wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*((index - curveCount/2)/curveCount)
+      wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index - curveCount/2)/curveCount)
       color1[index] = shuffledPalette[4]
       color2[index] = shuffledPalette[2]
       wrapAngle[index] = -1.0 * wrapBool
       
   } else  {
-      wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-3 * numBez/4)/this.numBez))
-      wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-3 * numBez/4)/this.numBez))
-      color1[index] = shuffledPalette[3]
-      color2[index] = shuffledPalette[4]
+      wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-3 * curveCount/4)/curveCount))
+      wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-3 * curveCount/4)/curveCount))
+      color1[index] = new THREE.Color( shuffledPalette[3] )
+      color2[index] = new THREE.Color( shuffledPalette[4] )
       wrapAngle[index] = -1.0 * wrapBool
   }
 }
@@ -301,62 +310,59 @@ const particlePointSpray = ( factor , spread, power) =>
 
 const center = new THREE.Vector3()
 
-const geometries = []
-const materials = []
+const pointsArray = []
 const bezierPoints = []
-const bezierPositions = []
-const linePositions = []
-const smallOffsets = []
-const largeOffsets = []
-const factors = []
+const starts = []
+const ends = []
 
-const curveCount = $fx.getParam("curveCount")
-const particleCount = $fx.getParam("particleCount")
-const countPerCurve = particleCount/curveCount
 
-const setupBuffers = (i) => 
-{
-  
-  bezierPositions[i] = new Float32Array(countPerCurve * 3)
-  linePositions[i] = new Float32Array(countPerCurve * 3)
-  smallOffsets[i] = new Float32Array(countPerCurve * 3)
-  largeOffsets[i] = new Float32Array(countPerCurve * 3)
-  factors[i] = new Float32Array(countPerCurve * 1)
-}
+
+
 const generateBezierPoints = (i) => {
-  const start = new THREE.Vector3(
-    bezierStartPoint[0] + i * offsets[0],
-    bezierStartPoint[1] + i * offsets[1],
-    bezierStartPoint[2] + i * offsets[2]
+  starts[i] = new THREE.Vector3(
+    bezierStartPoint[0] + i * offsets[0][0],
+    bezierStartPoint[1] + i * offsets[0][1],
+    bezierStartPoint[2] + i * offsets[0][2]
   )
 
-  const end = new THREE.Vector3(
-    bezierEndPoint[0] + i * offsets[0],
-    bezierEndPoint[1] + i * offsets[1],
-    bezierEndPoint[2] + i * offsets[2]
+
+
+  ends[i] = new THREE.Vector3(
+    bezierEndPoint[0] + i * offsets[1][0],
+    bezierEndPoint[1] + i * offsets[1][1],
+    bezierEndPoint[2] + i * offsets[1][2]
   )
 
   const bezierCurve = new THREE.CubicBezierCurve3(
-    start,
+    starts[i],
     new THREE.Vector3(
-      bezierControl1[0] + i * offsets[0],
-      bezierControl1[1] + i * offsets[1],
-      bezierControl1[2] + i * offsets[2]
+      bezierControl1[0] + i * offsets[2][0],
+      bezierControl1[1] + i * offsets[2][1],
+      bezierControl1[2] + i * offsets[2][2]
     ),
 
     new THREE.Vector3(
-      bezierControl2[0] + i * offsets[0],
-      bezierControl2[1] + i * offsets[1],
-      bezierControl2[2] + i * offsets[2]
+      bezierControl2[0] + i * offsets[3][0],
+      bezierControl2[1] + i * offsets[3][1],
+      bezierControl2[2] + i * offsets[3][2]
     ),
-    end
+    ends[i]
   )
+
   bezierPoints[i] = bezierCurve.getPoints( countPerCurve )
 
 }
 const generateParticles = (index) => {
-  geometries[index] = new THREE.BufferGeometry()
-  materials[index] = new THREE.ShaderMaterial({
+  const bezierPositions = new Float32Array(countPerCurve * 3)
+  const linePositions = new Float32Array(countPerCurve * 3)
+  const smallOffsets = new Float32Array(countPerCurve * 3)
+  const largeOffsets = new Float32Array(countPerCurve * 3)
+  const factors = new Float32Array(countPerCurve * 1)
+
+
+
+  const geometry = new THREE.BufferGeometry()
+  const material = new THREE.ShaderMaterial({
     vertexShader: vertex,
     fragmentShader: fragment,
     uniforms:
@@ -376,66 +382,64 @@ const generateParticles = (index) => {
     depthWrite: false,
     // blending: THREE.AdditiveBlending,
     vertexColors: true
-})
+  })
+
 
   for(let i = 0; i < countPerCurve; i++)
   {
-      const i3 = i * 3
-      const factor = i / countPerCurve
-      
+    const i3 = i * 3
+    const factor = i / countPerCurve
 
-      this.factors[index][i] = factor;
 
-      const bezierPoint = this.bezierPoints[i]
-      const line = this.linePoint(this.start,this.end, factor)
-      const spraySmall = this.particlePointSpray( factor, this.features.particleSmallSpread,this.features.particleSmallPower )
-      const sprayLarge = this.particlePointSpray( factor, this.features.particleLargeSpread,this.features.particleLargePower )
+    factors[i] = factor
+    const bPoints =     bezierPoints[index]
+    const bezierPoint = bPoints[i]
+
+    const line =        linePoint(starts[index],ends[index], factor)
+    const spraySmall =  particlePointSpray( factor, particleSmallSpread,particleSmallPower )
+    const sprayLarge =  particlePointSpray( factor, particleLargeSpread,particleLargePower )
+
+// console.log('bpoin',bPoints)
+// console.log('factors[i]',factors[i])
+// console.log('bezierPoint',bezierPoint)
+
+
+    bezierPositions[i3    ] = bezierPoint.x
+    bezierPositions[i3 + 1] = bezierPoint.y
+    bezierPositions[i3 + 2] = bezierPoint.z
       
-      this.bezierPositions[i3    ] = bezierPoint.x
-      this.bezierPositions[i3 + 1] = bezierPoint.y
-      this.bezierPositions[i3 + 2] = bezierPoint.z
+    linePositions[i3    ] = line.x
+    linePositions[i3 + 1] = line.y
+    linePositions[i3 + 2] = line.z
       
-      
-      
-      this.linePositions[i3    ] = line.x
-      this.linePositions[i3 + 1] = line.y
-      this.linePositions[i3 + 2] = line.z
-      
-      this.smallOffsets[i3    ] = spraySmall.x
-      this.smallOffsets[i3 + 1] = spraySmall.y
-      this.smallOffsets[i3 + 2] = spraySmall.z
-      
-      this.largeOffsets[i3    ] = sprayLarge.x
-      this.largeOffsets[i3 + 1] = sprayLarge.y
-      this.largeOffsets[i3 + 2] = sprayLarge.z
+    smallOffsets[i3    ] = spraySmall.x
+    smallOffsets[i3 + 1] = spraySmall.y
+    smallOffsets[i3 + 2] = spraySmall.z
+    
+    largeOffsets[i3    ] = sprayLarge.x
+    largeOffsets[i3 + 1] = sprayLarge.y
+    largeOffsets[i3 + 2] = sprayLarge.z
 
   }
 
         
 
-        this.geometry.setAttribute('position', new THREE.BufferAttribute(this.bezierPositions, 3))
-        this.geometry.setAttribute('aFactor', new THREE.BufferAttribute(this.factors, 1))
-        this.geometry.setAttribute('aLinePosition', new THREE.BufferAttribute(this.linePositions, 3))
-        this.geometry.setAttribute('aSmallOffset', new THREE.BufferAttribute(this.smallOffsets, 3))
-        this.geometry.setAttribute('aLargeOffset', new THREE.BufferAttribute(this.largeOffsets, 3))
-    
-        this.points = new THREE.Points(this.geometry, this.material)
-        this.scene.add(this.points)
+        geometry.setAttribute('position', new THREE.BufferAttribute(bezierPositions, 3))
+        geometry.setAttribute('aFactor', new THREE.BufferAttribute(factors, 1))
+        geometry.setAttribute('aLinePosition', new THREE.BufferAttribute(linePositions, 3))
+        geometry.setAttribute('aSmallOffset', new THREE.BufferAttribute(smallOffsets, 3))
+        geometry.setAttribute('aLargeOffset', new THREE.BufferAttribute(largeOffsets, 3))
+  
+
+        const points = new THREE.Points(geometry, material)
+        pointsArray.push(points)
+        scene.add(points)
 }
 
 
 
 
 
-for (let i = 0; i < $fx.getParam("curveCount"); i++) {
-  setupBuffers(i)
-  generateBezierPoints(i)
-  generateParticles(i)
-
-  geometries[i].computeBoundingSphere()
-  const centerLoc = geometries[i].boundingSphere.center
-  center.addScaledVector(centerLoc,1/$fx.getParam("curveCount"))
-}
 /**
  * Setup the scene
 */
@@ -448,6 +452,15 @@ scene.background = new THREE.Color( shuffledPalette[0] )
 
 
 
+for (let i = 0; i < $fx.getParam("curveCount"); i++) {
+
+  generateBezierPoints(i)
+  generateParticles(i)
+
+  pointsArray[i].geometry.computeBoundingSphere()
+  const centerLoc = pointsArray[i].geometry.boundingSphere.center
+  center.addScaledVector(centerLoc,1/$fx.getParam("curveCount"))
+}
 
 
 /**
