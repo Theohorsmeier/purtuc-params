@@ -55,15 +55,15 @@ const palettes = [
 ];
 
 const paletteNames = palettes.map(p => p.name)
-
+const rotation_axes = ['x','y','z','none']
 
 $fx.params([
   {
     id: "particleCount",
-    name: "ParticleCount",
+    name: "Particles per Curve ⚠",
     type: "number",
-    default: 1000,
-    options: { min: 1000,max: 10000000,step: 1000 },
+    default: 10000,
+    options: { min: 1000,max: 10000,step: 1000 },
   },
   {
     id: "particleSize",
@@ -77,7 +77,7 @@ $fx.params([
     name: "Curves",
     type: "number",
     default: 100,
-    options: { min: 20,max: 1000,step: 1 },
+    options: { min: 20,max: 200,step: 1 },
   },
   {
     id: "wrapMinStart",
@@ -122,17 +122,26 @@ $fx.params([
       options: paletteNames,
     }
   },
-  //FOR TESTING AND GENERATING PALETTES ONLY
-  {id: "color1",name: "Color 1",type: "color"},
-  {id: "color2",name: "Color 2",type: "color"},
-  {id: "color3",name: "Color 3",type: "color"},
-  {id: "color4",name: "Color 4",type: "color"},
-  {id: "color5",name: "Color 5",type: "color"},
   {
-    id: "colorPick",
-    name: "Use custom colors",
-    type: "boolean",
+    id: "axis_id",
+    name: "Rotation_axis",
+    type: "select",
+    options: {
+      options: rotation_axes,
+    }
   },
+
+  //FOR TESTING AND GENERATING PALETTES ONLY
+  // {id: "color1",name: "Color 1",type: "color"},
+  // {id: "color2",name: "Color 2",type: "color"},
+  // {id: "color3",name: "Color 3",type: "color"},
+  // {id: "color4",name: "Color 4",type: "color"},
+  // {id: "color5",name: "Color 5",type: "color"},
+  // {
+  //   id: "colorPick",
+  //   name: "Use custom colors",
+  //   type: "boolean",
+  // },
 ])
 
 
@@ -207,16 +216,16 @@ const bezierControl2 = [
 const palette_index = paletteNames.indexOf($fx.getParam("palette_id"))
 
 const palettePicks = palettes[palette_index].colors
-const colorPicks = [
-  $fx.getParam("color1").hex.rgb,
-  $fx.getParam("color2").hex.rgb,
-  $fx.getParam("color3").hex.rgb,
-  $fx.getParam("color4").hex.rgb,
-  $fx.getParam("color5").hex.rgb,
-]
+// const colorPicks = [
+//   $fx.getParam("color1").hex.rgb,
+//   $fx.getParam("color2").hex.rgb,
+//   $fx.getParam("color3").hex.rgb,
+//   $fx.getParam("color4").hex.rgb,
+//   $fx.getParam("color5").hex.rgb,
+// ]
 
-console.log("colors",colorPicks)
-console.log("palette",palettePicks)
+// console.log("colors",colorPicks)
+// console.log("palette",palettePicks)
 const palettePick = $fx.getParam("colorPick") ? colorPicks : palettePicks
 
 const shuffledPalette = palettePick.sort((a, b) => 0.5 - fxrand());
@@ -232,8 +241,8 @@ const wrapAngle = []
 
 const wrapBool = helper.FXRandomBool(0.5)
 const curveCount = $fx.getParam("curveCount")
-const particleCount = $fx.getParam("particleCount")
-const countPerCurve = particleCount/curveCount
+
+const countPerCurve = $fx.getParam("particleCount")
 
 
 for (let index = 0; index < curveCount; index++) {
@@ -253,8 +262,8 @@ for (let index = 0; index < curveCount; index++) {
   } else if (index < 3 * curveCount / 4){
       wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*((index - curveCount/2)/curveCount)
       wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index - curveCount/2)/curveCount)
-      color1[index] = shuffledPalette[4]
-      color2[index] = shuffledPalette[2]
+      color1[index] = new THREE.Color( shuffledPalette[4] )
+      color2[index] = new THREE.Color( shuffledPalette[2] )
       wrapAngle[index] = -1.0 * wrapBool
       
   } else  {
@@ -399,11 +408,6 @@ const generateParticles = (index) => {
     const spraySmall =  particlePointSpray( factor, particleSmallSpread,particleSmallPower )
     const sprayLarge =  particlePointSpray( factor, particleLargeSpread,particleLargePower )
 
-// console.log('bpoin',bPoints)
-// console.log('factors[i]',factors[i])
-// console.log('bezierPoint',bezierPoint)
-
-
     bezierPositions[i3    ] = bezierPoint.x
     bezierPositions[i3 + 1] = bezierPoint.y
     bezierPositions[i3 + 2] = bezierPoint.z
@@ -518,11 +522,23 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 const clock = new THREE.Clock()
 
+
+const rotationSpeed = helper.FXRandomBetween(0.0001,0.001) * ( helper.FXRandomBool()?1:-1)
+const axis_id = $fx.getParam("axis_id")
+
+
+
+console.log('rotationSpeed', rotationSpeed)
+
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-
+    if( axis_id !== "none"){
+      for (let i = 0; i < curveCount; i++) {
+        pointsArray[i].rotation[axis_id] += rotationSpeed * i *0.01
+      }
+    }
 
 
     controls.update()
