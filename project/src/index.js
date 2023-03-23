@@ -170,6 +170,8 @@ $fx.features({
  * Other Parameters for scene
  */
 
+console.log($fx.getParams())
+
 const particleSmallSpread = 0.1
 const particleLargeSpread = 5
 const bezierRadius = 10
@@ -545,6 +547,7 @@ const tick = () =>
     if( axis_id !== "none"){
       for (let i = 0; i < curveCount; i++) {
         pointsArray[i].rotation[axis_id] += rotationSpeed * i 
+        pointsArray[i].material.uniforms.uTime = elapsedTime
       }
     }
 
