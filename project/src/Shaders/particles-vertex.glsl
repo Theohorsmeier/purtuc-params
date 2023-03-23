@@ -43,8 +43,8 @@ float random(vec2 st)
 void main(){
 
         vec3 mixedPosition = mix(position, aLinePosition, uLineLerpFactor);
-        // vec3 offset = mix(aSmallOffset,aLargeOffset,uOffsetLerpFactor);
-        vec3 offset = mix(aSmallOffset,aLargeOffset,1.0-aFactor);
+        vec3 offset = mix(aSmallOffset,aLargeOffset,uOffsetLerpFactor);
+        // vec3 offset = mix(aSmallOffset,aLargeOffset,1.0-aFactor);
         vec3 offsetPosition = mixedPosition + offset;
 
         vec4 modelPosition = modelMatrix * vec4(offsetPosition, 1.0);
