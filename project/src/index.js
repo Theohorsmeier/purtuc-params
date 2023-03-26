@@ -112,7 +112,28 @@ $fx.params([
     name: "wrapFactor",
     type: "number",
     default: 1.0,
-    options: { min: 0.2,max: 1.0,step: 0.01 },
+    options: { min: 0.0,max: 1.0,step: 0.01 },
+  },
+  {
+    id: "lineFactor",
+    name: "lineFactor",
+    type: "number",
+    default: 1.0,
+    options: { min: 0.0,max: 1.0,step: 0.01 },
+  },
+  {
+    id: "spreadFactor",
+    name: "spread",
+    type: "number",
+    default: 1.0,
+    options: { min: 0.0,max: 1.0,step: 0.01 },
+  },
+  {
+    id: "rotationFactor",
+    name: "rotationFactor",
+    type: "number",
+    default: 1.0,
+    options: { min: 0.01,max: 5.0,step: 0.01 },
   },
   {
     id: "palette_id",
@@ -131,17 +152,12 @@ $fx.params([
     }
   },
 
-  //FOR TESTING AND GENERATING PALETTES ONLY
-  // {id: "color1",name: "Color 1",type: "color"},
-  // {id: "color2",name: "Color 2",type: "color"},
-  // {id: "color3",name: "Color 3",type: "color"},
-  // {id: "color4",name: "Color 4",type: "color"},
-  // {id: "color5",name: "Color 5",type: "color"},
-  // {
-  //   id: "colorPick",
-  //   name: "Use custom colors",
-  //   type: "boolean",
-  // },
+  {
+    id: "shuffle",
+    name: "Shuffle palette",
+    type: "boolean",
+    default: true
+  },
 ])
 
 
@@ -154,20 +170,22 @@ $fx.features({
  * Other Parameters for scene
  */
 
+console.log($fx.getParams())
+
 const particleSmallSpread = 0.1
-const particleLargeSpread = 1.5
+const particleLargeSpread = 5
 const bezierRadius = 10
 const bezierControlRadius = 10
 const particleSmallPower = 5
-const particleLargePower = 2
+const particleLargePower = 1.6
 
 const wrapMinStart = $fx.getParam("wrapMinStart")            
 const wrapMinEnd   = $fx.getParam("wrapMinEnd")          
 const wrapMaxStart = $fx.getParam("wrapMaxStart")            
 const wrapMaxEnd   = $fx.getParam("wrapMaxEnd")          
 
-const offsetLerpFactor = helper.FXRandomBetween(0,1) 
-const lineLerpFactor = helper.FXRandomBetween(0,1)
+const offsetLerpFactor = $fx.getParam("spreadFactor")
+const lineLerpFactor = $fx.getParam("lineFactor")
 
 /**
  * Start end, and control points for bezier
@@ -215,20 +233,12 @@ const bezierControl2 = [
 
 const palette_index = paletteNames.indexOf($fx.getParam("palette_id"))
 
-const palettePicks = palettes[palette_index].colors
-// const colorPicks = [
-//   $fx.getParam("color1").hex.rgb,
-//   $fx.getParam("color2").hex.rgb,
-//   $fx.getParam("color3").hex.rgb,
-//   $fx.getParam("color4").hex.rgb,
-//   $fx.getParam("color5").hex.rgb,
-// ]
+const palettePick = palettes[palette_index].colors
 
-// console.log("colors",colorPicks)
-// console.log("palette",palettePicks)
-const palettePick = $fx.getParam("colorPick") ? colorPicks : palettePicks
 
-const shuffledPalette = palettePick.sort((a, b) => 0.5 - fxrand());
+const shuffledPalette = [...palettePick].sort((a, b) => 0.5 - fxrand())
+
+const palette = $fx.getParam("shuffle") ? shuffledPalette : palettePick
 
 const wrapMin = []
 const wrapMax = []
@@ -249,28 +259,28 @@ for (let index = 0; index < curveCount; index++) {
   if (index < curveCount / 4){
       wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*(index/curveCount)
       wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*(index/curveCount)
-      color1[index] =  new THREE.Color( shuffledPalette[1] )
-      color2[index] =  new THREE.Color( shuffledPalette[2] )
+      color1[index] =  new THREE.Color( palette[1] )
+      color2[index] =  new THREE.Color( palette[2] )
       wrapAngle[index] = 1.0 * wrapBool
       
   } else if(index < 2 * curveCount / 4) {
       wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-curveCount/4)/curveCount))
       wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-curveCount/4)/curveCount))
-      color1[index] = new THREE.Color( shuffledPalette[3] )
-      color2[index] = new THREE.Color( shuffledPalette[1] )
+      color1[index] = new THREE.Color( palette[3] )
+      color2[index] = new THREE.Color( palette[1] )
       wrapAngle[index] = 1.0 * wrapBool
   } else if (index < 3 * curveCount / 4){
       wrapMin[index] = wrapMinStart + (wrapMinEnd-wrapMinStart)*((index - curveCount/2)/curveCount)
       wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index - curveCount/2)/curveCount)
-      color1[index] = new THREE.Color( shuffledPalette[4] )
-      color2[index] = new THREE.Color( shuffledPalette[2] )
+      color1[index] = new THREE.Color( palette[4] )
+      color2[index] = new THREE.Color( palette[2] )
       wrapAngle[index] = -1.0 * wrapBool
       
   } else  {
       wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-3 * curveCount/4)/curveCount))
       wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-3 * curveCount/4)/curveCount))
-      color1[index] = new THREE.Color( shuffledPalette[3] )
-      color2[index] = new THREE.Color( shuffledPalette[4] )
+      color1[index] = new THREE.Color( palette[3] )
+      color2[index] = new THREE.Color( palette[4] )
       wrapAngle[index] = -1.0 * wrapBool
   }
 }
@@ -384,8 +394,8 @@ const generateParticles = (index) => {
         uWrapFactor:  {value: $fx.getParam("wrapFactor")},
         uColor1: {value: color1[index]},
         uColor2: {value: color2[index]},
-        uOffsetLerpFactor: {value: $fx.getParam("offsetLerpFactor")},
-        uLineLerpFactor: {value: $fx.getParam("lineLerpFactor")},
+        uOffsetLerpFactor: {value: offsetLerpFactor},
+        uLineLerpFactor: {value: lineLerpFactor},
         
     },
     depthWrite: false,
@@ -452,7 +462,7 @@ const generateParticles = (index) => {
 const canvas = document.querySelector('canvas.webgl')
 
 const scene = new THREE.Scene()
-scene.background = new THREE.Color( shuffledPalette[0] )
+scene.background = new THREE.Color( palette[0] )
 
 
 
@@ -523,12 +533,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 const clock = new THREE.Clock()
 
 
-const rotationSpeed = helper.FXRandomBetween(0.0001,0.001) * ( helper.FXRandomBool()?1:-1)
+const rotationSpeed = 0.0001 * ( helper.FXRandomBool()?1:-1) * $fx.getParam("rotationFactor")
 const axis_id = $fx.getParam("axis_id")
 
 
 
-console.log('rotationSpeed', rotationSpeed)
+
 
 const tick = () =>
 {
@@ -536,14 +546,20 @@ const tick = () =>
 
     if( axis_id !== "none"){
       for (let i = 0; i < curveCount; i++) {
-        pointsArray[i].rotation[axis_id] += rotationSpeed * i *0.01
+        pointsArray[i].rotation[axis_id] += rotationSpeed * i 
+        pointsArray[i].material.uniforms.uTime = elapsedTime
       }
     }
 
 
     controls.update()
     renderer.render(scene, camera)
-    window.requestAnimationFrame(tick)
+    if ($fx.isPreview) {
+      $fx.preview()
+    } else {
+      window.requestAnimationFrame(tick)
+    }
+    
 }
 
 tick()

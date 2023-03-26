@@ -43,8 +43,8 @@ float random(vec2 st)
 void main(){
 
         vec3 mixedPosition = mix(position, aLinePosition, uLineLerpFactor);
-        // vec3 offset = mix(aSmallOffset,aLargeOffset,uOffsetLerpFactor);
-        vec3 offset = mix(aSmallOffset,aLargeOffset,1.0-aFactor);
+        vec3 offset = mix(aSmallOffset,aLargeOffset,uOffsetLerpFactor);
+        // vec3 offset = mix(aSmallOffset,aLargeOffset,1.0-aFactor);
         vec3 offsetPosition = mixedPosition + offset;
 
         vec4 modelPosition = modelMatrix * vec4(offsetPosition, 1.0);
@@ -52,7 +52,7 @@ void main(){
         
         vec4 projectedPosition = projectionMatrix * viewPosition;
         gl_Position = projectedPosition;
-        gl_PointSize = uSize;
+        gl_PointSize = uSize*5.0;
         gl_PointSize *= (1.0 / - viewPosition.z);
         // gl_Position.x -= 0.001 * uTime ;//* 1000.0;
 
