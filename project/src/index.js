@@ -296,14 +296,14 @@ for (let index = 0; index < curveCount; index++) {
       wrapMax[index] = wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index - curveCount/2)/curveCount)
       color1[index] = new THREE.Color( palette[4] )
       color2[index] = new THREE.Color( palette[2] )
-      wrapAngle[index] = $fx.getParam("center")? !wrapBool : wrapBool
+      wrapAngle[index] = $fx.getParam("crossWrap")? !wrapBool : wrapBool
       
   } else  {
       wrapMin[index] = -1 * (wrapMinStart + (wrapMinEnd-wrapMinStart)*((index-3 * curveCount/4)/curveCount))
       wrapMax[index] = -1 * (wrapMaxStart + (wrapMaxEnd-wrapMaxStart)*((index-3 * curveCount/4)/curveCount))
       color1[index] = new THREE.Color( palette[3] )
       color2[index] = new THREE.Color( palette[4] )
-      wrapAngle[index] = $fx.getParam("center")? !wrapBool : wrapBool
+      wrapAngle[index] = $fx.getParam("crossWrap")? !wrapBool : wrapBool
   }
 }
 
@@ -558,7 +558,7 @@ const clock = new THREE.Clock()
 const rotationSpeed = 0.00001 * ( helper.FXRandomBool()?1:-1) * $fx.getParam("rotationFactor")
 const axis_id = $fx.getParam("axis_id")
 
-if ($fx.isPreview||$fx.getParam("center")) {
+if ($fx.getParam("center")) {
   for (let i = 0; i < curveCount; i++) {
     pointsArray[i].position.sub(center)
     
@@ -579,7 +579,7 @@ const tick = () =>
 
 
     controls.update()
-    renderer.render(scene, camera)
+    
     if ($fx.isPreview||$fx.getParam("previewParam")) {
       if( axis_id !== "none"){
         for (let i = 0; i < curveCount; i++) {
@@ -587,8 +587,10 @@ const tick = () =>
           pointsArray[i].material.uniforms.uSize *= 10
         }
       }
+      renderer.render(scene, camera)
       $fx.preview()
     } else {
+      renderer.render(scene, camera)
       window.requestAnimationFrame(tick)
     }
     
