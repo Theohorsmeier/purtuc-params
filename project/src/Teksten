@@ -5,8 +5,11 @@ Palettes
 
 Fix?
 x Cross wrap?
+- Decide minimum part size
+- decide defaults
 - Preview
-    - Particle size not working in preview?
+    x Particle size not working in preview?
+    - Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
 - Default values
 - Delete preview param
 - Pauze (spacebar?) (not sure, piece is about interacting)

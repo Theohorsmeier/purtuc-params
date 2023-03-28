@@ -564,7 +564,7 @@ if ($fx.getParam("center")) {
     
   }
 }
-
+console.log($fx.getParams())
 
 const tick = () =>
 {
@@ -579,14 +579,16 @@ const tick = () =>
 
 
     controls.update()
-    
+    console.log(pointsArray[0].material.uniforms.uSize)
     if ($fx.isPreview||$fx.getParam("previewParam")) {
       if( axis_id !== "none"){
         for (let i = 0; i < curveCount; i++) {
           pointsArray[i].rotation[axis_id] += rotationSpeed * i * 1000
-          pointsArray[i].material.uniforms.uSize *= 10
+          // pointsArray[i].material.uniforms.uSize.value *= 10
         }
       }
+
+      console.log(pointsArray[0].material.uniforms.uSize)
       renderer.render(scene, camera)
       $fx.preview()
     } else {
