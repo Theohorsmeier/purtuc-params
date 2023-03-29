@@ -15,6 +15,7 @@ uniform vec3 uColor1;
 uniform vec3 uColor2;
 uniform float uTime;
 uniform float uSize;
+uniform float uMinSize;
 uniform float uWrapMin;
 uniform float uWrapMax;
 uniform float uWrapAngle;
@@ -52,7 +53,8 @@ void main(){
         
         vec4 projectedPosition = projectionMatrix * viewPosition;
         gl_Position = projectedPosition;
-        gl_PointSize = uSize*5.0;
+        gl_PointSize = max(uSize,uMinSize);
+        
         gl_PointSize *= (1.0 / - viewPosition.z);
         // gl_Position.x -= 0.001 * uTime ;//* 1000.0;
 

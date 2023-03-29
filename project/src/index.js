@@ -70,7 +70,7 @@ $fx.params([
     name: "ParticleSize",
     type: "number",
     default: 30,
-    options: { min: 1,max: 100,step: 1 },
+    options: { min: 1,max: 500,step: 1 },
   },
   {
     id: "curveCount",
@@ -142,6 +142,13 @@ $fx.params([
     options: { min: 0.01,max: 5.0,step: 0.01 },
   },
   {
+    id: "uMinSize",
+    name: "uMinSize",
+    type: "number",
+    default: 1.0,
+    options: { min: 1.0,max: 500,step: 0.1 },
+  },
+  {
     id: "palette_id",
     name: "Palette",
     type: "select",
@@ -178,11 +185,57 @@ $fx.params([
     type: "boolean",
     default: true
   },
-
+  {
+    id: "minSpread",
+    name: "minSpread",
+    type: "number",
+    default: 0.1,
+    options: { min: 0.1,max: 2.0,step: 0.1 },
+  },
+  {
+    id: "maxSpread",
+    name: "maxSpread",
+    type: "number",
+    default: 1.0,
+    options: { min: 1.0,max: 50,step: 0.1 },
+  },
+  {
+    id: "startRadius",
+    name: "startRadius",
+    type: "number",
+    default: 1.0,
+    options: { min: 1.0,max: 500,step: 0.1 },
+  },
+  {
+    id: "controlRadius",
+    name: "controlRadius",
+    type: "number",
+    default: 1.0,
+    options: { min: 1.0,max: 500,step: 0.1 },
+  },
+  {
+    id: "minPower",
+    name: "minPower",
+    type: "number",
+    default: 1.0,
+    options: { min: 1.01,max: 10,step: 0.01 },
+  },
+  {
+    id: "maxPower",
+    name: "maxPower",
+    type: "number",
+    default: 1.0,
+    options: { min: 1.01,max: 5,step: 0.01 },
+  },
 
 ])
 
-
+// 
+// 
+// 
+// 
+// 
+// 
 
 $fx.features({
   "Palette": $fx.getParam("palette_id"),
@@ -194,12 +247,19 @@ $fx.features({
 
 console.log($fx.getParams())
 
-const particleSmallSpread = 0.1
-const particleLargeSpread = 5
-const bezierRadius = 10
-const bezierControlRadius = 10
-const particleSmallPower = 5
-const particleLargePower = 1.6
+// const particleSmallSpread = 0.1
+// const particleLargeSpread = 5
+// const bezierRadius = 10
+// const bezierControlRadius = 10
+// const particleSmallPower = 5
+// const particleLargePower = 1.6
+
+const particleSmallSpread = $fx.getParam("minSpread")
+const particleLargeSpread = $fx.getParam("maxSpread")
+const bezierRadius        = $fx.getParam("startRadius")
+const bezierControlRadius = $fx.getParam("controlRadius")
+const particleSmallPower = $fx.getParam("minPower")
+const particleLargePower = $fx.getParam("maxPower")
 
 const wrapMinStart = $fx.getParam("wrapMinStart")            
 const wrapMinEnd   = $fx.getParam("wrapMinEnd")          
@@ -261,6 +321,14 @@ const palettePick = palettes[palette_index].colors
 const shuffledPalette = [...palettePick].sort((a, b) => 0.5 - fxrand())
 
 const palette = $fx.getParam("shuffle") ? shuffledPalette : palettePick
+
+const uSize = $fx.getParam("particleSize")
+
+const defaultMinSize = 1.0
+
+const uMinSize = ($fx.isPreview||$fx.getParam("previewParam"))? $fx.getParam("uMinSize") : defaultMinSize
+
+console.log('uminsize',uMinSize)
 
 const wrapMin = []
 const wrapMax = []
@@ -408,7 +476,8 @@ const generateParticles = (index) => {
     fragmentShader: fragment,
     uniforms:
     {
-        uSize: { value: $fx.getParam("particleSize")  },
+        uSize: { value: uSize  },
+        uMinSize: { value : uMinSize },
         uTime: {value: 0},
         uWrapMin: {value: wrapMin[index]},
         uWrapMax: {value: wrapMax[index]},
