@@ -176,7 +176,7 @@ $fx.params([
     id: "previewParam",
     name: "Test Preview",
     type: "boolean",
-    default: true
+    default: false
   },
 
   {
@@ -185,48 +185,48 @@ $fx.params([
     type: "boolean",
     default: true
   },
-  {
-    id: "minSpread",
-    name: "minSpread",
-    type: "number",
-    default: 0.1,
-    options: { min: 0.1,max: 2.0,step: 0.1 },
-  },
-  {
-    id: "maxSpread",
-    name: "maxSpread",
-    type: "number",
-    default: 1.0,
-    options: { min: 1.0,max: 50,step: 0.1 },
-  },
-  {
-    id: "startRadius",
-    name: "startRadius",
-    type: "number",
-    default: 1.0,
-    options: { min: 1.0,max: 20,step: 0.1 },
-  },
-  {
-    id: "controlRadius",
-    name: "controlRadius",
-    type: "number",
-    default: 1.0,
-    options: { min: 1.0,max: 20,step: 0.1 },
-  },
-  {
-    id: "minPower",
-    name: "minPower",
-    type: "number",
-    default: 1.0,
-    options: { min: 1.01,max: 10,step: 0.01 },
-  },
-  {
-    id: "maxPower",
-    name: "maxPower",
-    type: "number",
-    default: 1.0,
-    options: { min: 1.01,max: 5,step: 0.01 },
-  },
+  // {
+  //   id: "minSpread",
+  //   name: "minSpread",
+  //   type: "number",
+  //   default: 0.1,
+  //   options: { min: 0.1,max: 2.0,step: 0.1 },
+  // },
+  // {
+  //   id: "maxSpread",
+  //   name: "maxSpread",
+  //   type: "number",
+  //   default: 1.0,
+  //   options: { min: 1.0,max: 50,step: 0.1 },
+  // },
+  // {
+  //   id: "startRadius",
+  //   name: "startRadius",
+  //   type: "number",
+  //   default: 1.0,
+  //   options: { min: 1.0,max: 20,step: 0.1 },
+  // },
+  // {
+  //   id: "controlRadius",
+  //   name: "controlRadius",
+  //   type: "number",
+  //   default: 1.0,
+  //   options: { min: 1.0,max: 20,step: 0.1 },
+  // },
+  // {
+  //   id: "minPower",
+  //   name: "minPower",
+  //   type: "number",
+  //   default: 1.0,
+  //   options: { min: 1.01,max: 10,step: 0.01 },
+  // },
+  // {
+  //   id: "maxPower",
+  //   name: "maxPower",
+  //   type: "number",
+  //   default: 1.0,
+  //   options: { min: 1.01,max: 5,step: 0.01 },
+  // },
 
 ])
 
@@ -237,9 +237,7 @@ $fx.params([
 // 
 // 
 
-$fx.features({
-  "Palette": $fx.getParam("palette_id"),
-})
+
 
 /**
  * Other Parameters for scene
@@ -247,19 +245,19 @@ $fx.features({
 
 console.log($fx.getParams())
 
-// const particleSmallSpread = 0.1
-// const particleLargeSpread = 5
-// const bezierRadius = 10
-// const bezierControlRadius = 10
-// const particleSmallPower = 5
-// const particleLargePower = 1.6
+const particleSmallSpread = 0.1
+const particleLargeSpread = 5
+const bezierRadius = 10
+const bezierControlRadius = 10
+const particleSmallPower = 5
+const particleLargePower = 1.6
 
-const particleSmallSpread = $fx.getParam("minSpread")
-const particleLargeSpread = $fx.getParam("maxSpread")
-const bezierRadius        = $fx.getParam("startRadius")
-const bezierControlRadius = $fx.getParam("controlRadius")
-const particleSmallPower = $fx.getParam("minPower")
-const particleLargePower = $fx.getParam("maxPower")
+// const particleSmallSpread = $fx.getParam("minSpread")
+// const particleLargeSpread = $fx.getParam("maxSpread")
+// const bezierRadius        = $fx.getParam("startRadius")
+// const bezierControlRadius = $fx.getParam("controlRadius")
+// const particleSmallPower = $fx.getParam("minPower")
+// const particleLargePower = $fx.getParam("maxPower")
 
 const wrapMinStart = $fx.getParam("wrapMinStart")            
 const wrapMinEnd   = $fx.getParam("wrapMinEnd")          
@@ -388,13 +386,25 @@ const randomVecMiddle = (mul = 1) =>
     mul * helper.FXRandomBetween(-1,1)
   ]
 }
+const offsetBool = helper.FXRandomBool()
+// const offsets = [
+//   randomVecMiddle(),
+//   randomVecMiddle(),
+//   randomVecMiddle(0.01),
+//   randomVecMiddle(0.1)
+// ]
 
 const offsets = [
-  randomVecMiddle(),
-  randomVecMiddle(),
-  randomVecMiddle(0.01),
-  randomVecMiddle(0.01)
+  randomVecMiddle(offsetBool?5 : 1),
+  randomVecMiddle(offsetBool?5 : 1),
+  randomVecMiddle(offsetBool?5 : 0.01),
+  randomVecMiddle(offsetBool?5 : 0.01)
 ]
+
+$fx.features({
+  "Palette": $fx.getParam("palette_id"),
+  "Kronkel": offsetBool,
+})
 
 const linePoint = (start,end,factor) => 
 {
