@@ -141,13 +141,13 @@ $fx.params([
     default: 1.0,
     options: { min: 0.01,max: 5.0,step: 0.01 },
   },
-  {
-    id: "uMinSize",
-    name: "uMinSize",
-    type: "number",
-    default: 1.0,
-    options: { min: 1.0,max: 500,step: 0.1 },
-  },
+  // {
+  //   id: "uMinSize",
+  //   name: "uMinSize",
+  //   type: "number",
+  //   default: 1.0,
+  //   options: { min: 1.0,max: 50,step: 0.1 },
+  // },
   {
     id: "palette_id",
     name: "Palette",
@@ -204,14 +204,14 @@ $fx.params([
     name: "startRadius",
     type: "number",
     default: 1.0,
-    options: { min: 1.0,max: 500,step: 0.1 },
+    options: { min: 1.0,max: 20,step: 0.1 },
   },
   {
     id: "controlRadius",
     name: "controlRadius",
     type: "number",
     default: 1.0,
-    options: { min: 1.0,max: 500,step: 0.1 },
+    options: { min: 1.0,max: 20,step: 0.1 },
   },
   {
     id: "minPower",
@@ -324,9 +324,11 @@ const palette = $fx.getParam("shuffle") ? shuffledPalette : palettePick
 
 const uSize = $fx.getParam("particleSize")
 
-const defaultMinSize = 1.0
+const defaultMinSize = 1 // when not preview
 
-const uMinSize = ($fx.isPreview||$fx.getParam("previewParam"))? $fx.getParam("uMinSize") : defaultMinSize
+const previewMinSize = 50
+
+const uMinSize = ($fx.isPreview||$fx.getParam("previewParam")) ? previewMinSize : defaultMinSize
 
 console.log('uminsize',uMinSize)
 
