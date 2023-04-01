@@ -5,14 +5,15 @@ Palettes
 
 Fix?
 x Cross wrap?
-- Decide minimum part size
+- Decide minimum part size (only for preview)
 - decide defaults
 - Preview
     x Particle size not working in preview?
+    - Current min part size: 50, test it for multiple previews
     - Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
 - Default values
 - Delete preview param
-- Pauze (spacebar?) (not sure, piece is about interacting)
+- Pause (spacebar?) (not sure, piece is about interacting)
 
 
 Description
@@ -25,6 +26,7 @@ Title
 - Vogelver---
 - 
 
+TEZOS SUMMIT??? Deadline April 9
 
 Possible Hashes + Settings
 
