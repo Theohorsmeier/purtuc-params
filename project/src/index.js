@@ -62,21 +62,21 @@ $fx.params([
     id: "particleCount",
     name: "Particles per Curve ⚠",
     type: "number",
-    default: 10000,
+    default: 8000,
     options: { min: 1000,max: 10000,step: 1000 },
   },
   {
     id: "particleSize",
     name: "ParticleSize",
     type: "number",
-    default: 30,
+    default: 50,
     options: { min: 1,max: 500,step: 1 },
   },
   {
     id: "curveCount",
     name: "Curves",
     type: "number",
-    default: 100,
+    default: 200,
     options: { min: 20,max: 200,step: 1 },
   },
   {
@@ -111,7 +111,7 @@ $fx.params([
     id: "wrapFactor",
     name: "wrapFactor",
     type: "number",
-    default: 1.0,
+    default: 0.6,
     options: { min: 0.0,max: 1.0,step: 0.01 },
   },
   {
@@ -131,7 +131,7 @@ $fx.params([
     id: "spreadFactor",
     name: "spread",
     type: "number",
-    default: 1.0,
+    // default: 0.5,
     options: { min: 0.0,max: 1.0,step: 0.01 },
   },
   {
@@ -141,13 +141,6 @@ $fx.params([
     default: 1.0,
     options: { min: 0.01,max: 5.0,step: 0.01 },
   },
-  // {
-  //   id: "uMinSize",
-  //   name: "uMinSize",
-  //   type: "number",
-  //   default: 1.0,
-  //   options: { min: 1.0,max: 50,step: 0.1 },
-  // },
   {
     id: "palette_id",
     name: "Palette",
