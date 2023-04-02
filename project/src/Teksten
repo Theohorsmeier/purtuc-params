@@ -9,8 +9,8 @@ x Cross wrap?
 - decide defaults
 - Preview
     x Particle size not working in preview?
-    - Current min part size: 50, test it for multiple previews
-    - Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
+    - Current preview min part size: 50, test it for multiple previews --> Seems ok!
+    x Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
 - Default values
 - Delete preview param
 - Pause (spacebar?) (not sure, piece is about interacting)
