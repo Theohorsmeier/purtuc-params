@@ -124,7 +124,7 @@ $fx.params([
     id: "lineFactor",
     name: "lineFactor",
     type: "number",
-    default: 1.0,
+    default: 0.0,
     options: { min: 0.0,max: 1.0,step: 0.01 },
   },
   {

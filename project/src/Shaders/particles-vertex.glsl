@@ -37,12 +37,11 @@ float wrapBetween(float value, float min, float max){
 
 
 float random(vec2 st)
-{
+{ 
     return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
-
-void main(){
-
+ 
+void main(){ 
         vec3 mixedPosition = mix(position, aLinePosition, uLineLerpFactor);
         vec3 offset = mix(aSmallOffset,aLargeOffset,uOffsetLerpFactor);
         // vec3 offset = mix(aSmallOffset,aLargeOffset,1.0-aFactor);
