@@ -1,7 +1,7 @@
 Palettes
-- Add?
-- Names
-- 
+- Add? Based on pictures or paintings
+- Names => revise, HuKerk. Kerk, Mono, etc?
+- Findus OK
 
 Fix?
 x Cross wrap?
@@ -10,7 +10,7 @@ x Decide minimum part size (only for preview)
     x Particle size not working in preview?
     - Current preview min part size: 50, test it for multiple previews --> Seems ok!
     x Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
-- Default values
+x Default values
 - Delete preview param
 
 
