@@ -111,7 +111,7 @@ $fx.params([
     id: "wrapFactor",
     name: "wrapFactor",
     type: "number",
-    default: 0.6,
+    // default: 0.6,
     options: { min: 0.0,max: 1.0,step: 0.01 },
   },
   {
