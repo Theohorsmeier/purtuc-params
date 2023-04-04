@@ -10,6 +10,14 @@ import fragment from './Shaders/particles-fragment.glsl'
 const palettes = [  
   {    
     name: "Kerk",
+    colors: [0xf2e3c6, 0x655139, 0x1bb8fb, 0xff513e, 0xbcd728]
+  },
+  {    
+    name: "Koffie",
+    colors: [0x4bb18f, 0xc5342f, 0xd9c8a7, 0x3d230d, 0x93bfa4]
+  },
+  {    
+    name: "Drenk",
     colors: [ 0xaaaaaa, 0x0059ff, 0xff5000, 0xffffff, 0x000000 ]
   },
   {    
@@ -20,36 +28,30 @@ const palettes = [
     name: "Bos",
     colors: [0xf6e756, 0xc0da39, 0x528504, 0xf75608, 0x6a530f]
   },
+
   {    
-    name: "HuKerk",
-    colors: [0xf2e3c6, 0x655139, 0x1bb8fb, 0xff513e, 0xbcd728]
-  },
-  {    
-    name: "Paars",
+    name: "Zand",
     colors: [0x7659ab, 0xc755c4, 0xff6e73, 0xfe734a, 0xffc245]
   },
-  {    
-    name: "Koffie",
-    colors: [0x4bb18f, 0xc5342f, 0xd9c8a7, 0x3d230d, 0x93bfa4]
-  },
-  {
-    name: "Verscholen",
-    colors: [ 0xaaaaaa, 0x00ffea, 0xce00ff, 0xffffff, 0x000000 ]
-  },
+
+  // {
+  //   name: "Fel",
+  //   colors: [ 0xaaaaaa, 0x00ffea, 0xce00ff, 0xffffff, 0x000000 ]
+  // },
   // {
   //   name: "Ontvreemd",
   //   colors: [ 0x00adff, 0xff001a, 0xaaaaaa, 0xffffff, 0x000000 ]
   // },
   {
-    name: "Vergelijkbaar",
+    name: "Pad",
     colors: [ 0xFFC300, 0xFF5733, 0xC70039, 0x900C3F, 0x581845 ]
   },
   {
-    name: "Aanvullend",
+    name: "Vak",
     colors: [ 0xFF4136, 0x0074D9, 0xFFDC00, 0x001f3f, 0x3D9970 ]
   },
   {
-    name: "Mono",
+    name: "Enkel",
     colors: [ 0xF7F7F7, 0xD9D9D9, 0xA7A7A7, 0x737373, 0x404040 ]
   }
 ];
@@ -165,12 +167,12 @@ $fx.params([
     default: true
   },
 
-  {
-    id: "previewParam",
-    name: "Test Preview",
-    type: "boolean",
-    default: false
-  },
+  // {
+  //   id: "previewParam",
+  //   name: "Test Preview",
+  //   type: "boolean",
+  //   default: false
+  // },
 
   {
     id: "center",

@@ -1,7 +1,7 @@
 Palettes
 - Add? Based on pictures or paintings
-- Names => revise, HuKerk. Kerk, Mono, etc?
-- Findus OK
+x Names => revise, HuKerk. Kerk, Mono, etc?
+x Findus OK
 
 Fix?
 x Cross wrap?
@@ -11,8 +11,8 @@ x Decide minimum part size (only for preview)
     - Current preview min part size: 50, test it for multiple previews --> Seems ok!
     x Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
 x Default values
-- Delete preview param
-are birds still somewhere? radius??
+x Delete preview param
+x are birds still somewhere? radius??
 
 
 Description
@@ -25,7 +25,7 @@ Title
 - Vogelver---
 - 
 
-TEZOS SUMMIT??? Deadline April 9
+TEZOS SUMMIT??? Deadline April 14
 
 Possible Hashes + Settings
 
