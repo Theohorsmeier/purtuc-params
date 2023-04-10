@@ -6,14 +6,15 @@ x Findus OK
 Fix?
 x Cross wrap?
 x Decide minimum part size (only for preview)
-- Preview
+x Preview
     x Particle size not working in preview?
-    - Current preview min part size: 50, test it for multiple previews --> Seems ok!
+    x Current preview min part size: 50, test it for multiple previews --> Seems ok!
     x Part size lower than 5(?) ugly in preview, maybe make a min size for preview only
 x Default values
 x Delete preview param
 x are birds still somewhere? radius??
 
+preview 1280
 
 Description
 - Params
@@ -30,3 +31,12 @@ TEZOS SUMMIT??? Deadline April 14
 Possible Hashes + Settings
 
 root folder screenshots
+
+
+
+Particles drawn in space. The particles are spread around a group of curves, the general shape of these curves is decided by the hash, but you can influence other things. 
+- The location of a particle can be "wrapped around" in space. The wrapping can be either horizontal or vertical (random), or both (Double wrap checkbox), and you can change the ranges of the wrapping behavior. The Wrap factor param mixes between the original position and the wrapped one.
+- The curves can either be a straight line from A to B, or a Bezier curve, the param Line factor decides how much of each.
+- Particle spread factor decides how far from the curve the particles can be spread.
+- The curves are rotated, each at a different speed. You can influence the overall speed multiplier and the axis of rotation.
+- If you choose a palette, be aware of the shuffle checkbox. With shuffle turned on any one of the palette colors can be the background, and the rest is for the particles.
