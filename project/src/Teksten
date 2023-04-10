@@ -23,8 +23,13 @@ Description
 
 Title
 - Deeltjesverteller
-- Vogelver---
-- 
+- Vogelverklikker
+- Verendelen <--
+- Vederkerig
+
+
+LICENCES ETC!!!
+
 
 TEZOS SUMMIT??? Deadline April 14
 
@@ -32,11 +37,14 @@ Possible Hashes + Settings
 
 root folder screenshots
 
+This is an interactive and animated piece. You can use the mouse and scrollwheel on desktop, or touch controls on mobile, to shift the camera around. Because the wrap effect is happening in the screen space not in the world space, you might notice the wrapping makes rotating the scene a little unusual. 
 
 
-Particles drawn in space. The particles are spread around a group of curves, the general shape of these curves is decided by the hash, but you can influence other things. 
+The particles are spread around a group of curves, the general shape of these curves is decided by the hash, but you can influence other things. 
 - The location of a particle can be "wrapped around" in space. The wrapping can be either horizontal or vertical (random), or both (Double wrap checkbox), and you can change the ranges of the wrapping behavior. The Wrap factor param mixes between the original position and the wrapped one.
 - The curves can either be a straight line from A to B, or a Bezier curve, the param Line factor decides how much of each.
 - Particle spread factor decides how far from the curve the particles can be spread.
-- The curves are rotated, each at a different speed. You can influence the overall speed multiplier and the axis of rotation.
+- The curves rotate, each at a different speed. You can influence the overall speed multiplier and the axis of rotation.
 - If you choose a palette, be aware of the shuffle checkbox. With shuffle turned on any one of the palette colors can be the background, and the rest is for the particles.
+- Be careful with the number of particles per curve and the total number of curves. More particles overall means some devices might have a harder time rendering this smoothly.
+- Different browser and hardware combinations seem to behave slightly different when it comes to the particle size. If Safari is your main browser, be careful with particle sizes below 20, they seem (almost) invisible!
