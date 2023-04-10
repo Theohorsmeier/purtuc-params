@@ -33,15 +33,6 @@ const palettes = [
     name: "Zand",
     colors: [0x7659ab, 0xc755c4, 0xff6e73, 0xfe734a, 0xffc245]
   },
-
-  // {
-  //   name: "Fel",
-  //   colors: [ 0xaaaaaa, 0x00ffea, 0xce00ff, 0xffffff, 0x000000 ]
-  // },
-  // {
-  //   name: "Ontvreemd",
-  //   colors: [ 0x00adff, 0xff001a, 0xaaaaaa, 0xffffff, 0x000000 ]
-  // },
   {
     name: "Pad",
     colors: [ 0xFFC300, 0xFF5733, 0xC70039, 0x900C3F, 0x581845 ]
@@ -61,57 +52,73 @@ const rotation_axes = ['x','y','z','none']
 
 $fx.params([
   {
+    id: "palette_id",
+    name: "Palette",
+    type: "select",
+    options: {
+      options: paletteNames,
+    }
+  },
+
+  {
+    id: "shuffle",
+    name: "Shuffle palette",
+    type: "boolean",
+    default: true
+  },
+
+  {
     id: "particleCount",
-    name: "Particles per Curve ⚠",
+    name: "Particles/curve ⚠",
     type: "number",
     default: 8000,
     options: { min: 1000,max: 10000,step: 1000 },
   },
   {
     id: "particleSize",
-    name: "ParticleSize",
+    name: "Particle size",
     type: "number",
-    default: 50,
+    default: 100,
     options: { min: 1,max: 500,step: 1 },
   },
   {
     id: "curveCount",
-    name: "Curves",
+    name: "Curves ⚠",
     type: "number",
     default: 200,
-    options: { min: 20,max: 200,step: 1 },
+    options: { min: 20,max: 500,step: 1 },
   },
   {
     id: "wrapMinStart",
-    name: "wrapMinStart",
+    name: "Wrap min start",
     type: "number",
     default: 0,
     options: { min: -20,max: 20,step: 0.1 },
   },
   {
     id: "wrapMinEnd",
-    name: "wrapMinEnd",
+    name: "Wrap min end",
     type: "number",
     default: 0,
     options: { min: -20,max: 20,step: 0.1 },
   },
   {
     id: "wrapMaxStart",
-    name: "wrapMaxStart",
+    name: "Wrap max start",
     type: "number",
     default: 10,
     options: { min: -20,max: 50,step: 0.1 },
   },
   {
     id: "wrapMaxEnd",
-    name: "wrapMaxEnd",
+    name: "Wrap max end",
     type: "number",
     default: 20,
     options: { min: -20,max: 50,step: 0.1 },
   },
   {
     id: "wrapFactor",
-    name: "wrapFactor",
+    name: "Wrap factor",
     type: "number",
     // default: 0.6,
     options: { min: 0.0,max: 1.0,step: 0.01 },
@@ -124,32 +131,24 @@ $fx.params([
   },
   {
     id: "lineFactor",
-    name: "lineFactor",
+    name: "Bezier (0.0) <> Line (1.0)",
     type: "number",
     default: 0.0,
     options: { min: 0.0,max: 1.0,step: 0.01 },
   },
   {
     id: "spreadFactor",
-    name: "spread",
+    name: "Particle spread factor",
     type: "number",
     // default: 0.5,
     options: { min: 0.0,max: 1.0,step: 0.01 },
   },
   {
     id: "rotationFactor",
-    name: "rotationFactor",
+    name: "Rotation multiplier",
     type: "number",
     default: 1.0,
     options: { min: 0.01,max: 5.0,step: 0.01 },
-  },
-  {
-    id: "palette_id",
-    name: "Palette",
-    type: "select",
-    options: {
-      options: paletteNames,
-    }
   },
   {
     id: "axis_id",
@@ -160,85 +159,17 @@ $fx.params([
     }
   },
 
-  {
-    id: "shuffle",
-    name: "Shuffle palette",
-    type: "boolean",
-    default: true
-  },
-
-  // {
-  //   id: "previewParam",
-  //   name: "Test Preview",
-  //   type: "boolean",
-  //   default: false
-  // },
-
-  {
-    id: "center",
-    name: "Center offset",
-    type: "boolean",
-    default: true
-  },
-  // {
-  //   id: "minSpread",
-  //   name: "minSpread",
-  //   type: "number",
-  //   default: 0.1,
-  //   options: { min: 0.1,max: 2.0,step: 0.1 },
-  // },
-  // {
-  //   id: "maxSpread",
-  //   name: "maxSpread",
-  //   type: "number",
-  //   default: 1.0,
-  //   options: { min: 1.0,max: 50,step: 0.1 },
-  // },
-  // {
-  //   id: "startRadius",
-  //   name: "startRadius",
-  //   type: "number",
-  //   default: 1.0,
-  //   options: { min: 1.0,max: 20,step: 0.1 },
-  // },
-  // {
-  //   id: "controlRadius",
-  //   name: "controlRadius",
-  //   type: "number",
-  //   default: 1.0,
-  //   options: { min: 1.0,max: 20,step: 0.1 },
-  // },
-  // {
-  //   id: "minPower",
-  //   name: "minPower",
-  //   type: "number",
-  //   default: 1.0,
-  //   options: { min: 1.01,max: 10,step: 0.01 },
-  // },
-  // {
-  //   id: "maxPower",
-  //   name: "maxPower",
-  //   type: "number",
-  //   default: 1.0,
-  //   options: { min: 1.01,max: 5,step: 0.01 },
-  // },
 
 ])
 
-// 
-// 
-// 
-// 
-// 
-// 
 
 
 
-/**
- * Other Parameters for scene
- */
 
 console.log($fx.getParams())
+
+const offsetBool = helper.FXRandomBool()
+const centerBool = helper.FXRandomBool()
 
 const particleSmallSpread = 0.1
 const particleLargeSpread = 5
@@ -247,12 +178,6 @@ const bezierControlRadius = 10
 const particleSmallPower = 5
 const particleLargePower = 1.6
 
-// const particleSmallSpread = $fx.getParam("minSpread")
-// const particleLargeSpread = $fx.getParam("maxSpread")
-// const bezierRadius        = $fx.getParam("startRadius")
-// const bezierControlRadius = $fx.getParam("controlRadius")
-// const particleSmallPower = $fx.getParam("minPower")
-// const particleLargePower = $fx.getParam("maxPower")
 
 const wrapMinStart = $fx.getParam("wrapMinStart")            
 const wrapMinEnd   = $fx.getParam("wrapMinEnd")          
@@ -319,11 +244,12 @@ const uSize = $fx.getParam("particleSize")
 
 const defaultMinSize = 1 // when not preview
 
-const previewMinSize = 50
+const previewMinSize = (offsetBool? 500 : 100)
+
 
 const uMinSize = ($fx.isPreview||$fx.getParam("previewParam")) ? previewMinSize : defaultMinSize
 
-console.log('uminsize',uMinSize)
+
 
 const wrapMin = []
 const wrapMax = []
@@ -381,7 +307,7 @@ const randomVecMiddle = (mul = 1) =>
     mul * helper.FXRandomBetween(-1,1)
   ]
 }
-const offsetBool = helper.FXRandomBool()
+
 // const offsets = [
 //   randomVecMiddle(),
 //   randomVecMiddle(),
@@ -399,6 +325,7 @@ const offsets = [
 $fx.features({
   "Palette": $fx.getParam("palette_id"),
   "Kronkel": offsetBool,
+  "Schuif": centerBool,
 })
 
 const linePoint = (start,end,factor) => 
@@ -601,10 +528,13 @@ const camera = new THREE.PerspectiveCamera(
   30, 
   sizes.width / sizes.height, 
   0.1, 
-  1000
+  10000
 )
 
 camera.position.set(50, 50, 50)
+if(offsetBool){
+  camera.position.set(500, 500, 500)
+}
 camera.lookAt(new THREE.Vector3(0,0,0))
 scene.add(camera)
 
@@ -634,13 +564,14 @@ const clock = new THREE.Clock()
 const rotationSpeed = 0.00001 * ( helper.FXRandomBool()?1:-1) * $fx.getParam("rotationFactor")
 const axis_id = $fx.getParam("axis_id")
 
-if ($fx.getParam("center")) {
+// if ($fx.getParam("center")) {
+if (centerBool) {
   for (let i = 0; i < curveCount; i++) {
     pointsArray[i].position.sub(center)
     
   }
 }
-console.log($fx.getParams())
+
 
 const tick = () =>
 {
@@ -655,16 +586,16 @@ const tick = () =>
 
 
     controls.update()
-    console.log(pointsArray[0].material.uniforms.uSize)
+    
     if ($fx.isPreview||$fx.getParam("previewParam")) {
       if( axis_id !== "none"){
         for (let i = 0; i < curveCount; i++) {
-          pointsArray[i].rotation[axis_id] += rotationSpeed * i * 1000
+          // pointsArray[i].rotation[axis_id] += rotationSpeed * i * 1000
           // pointsArray[i].material.uniforms.uSize.value *= 10
         }
       }
 
-      console.log(pointsArray[0].material.uniforms.uSize)
+      
       renderer.render(scene, camera)
       $fx.preview()
     } else {
