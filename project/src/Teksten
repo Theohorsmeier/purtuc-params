@@ -17,9 +17,9 @@ x are birds still somewhere? radius??
 preview 1280
 
 Description
-- Params
-- Controls
-- Warnings
+- xParams
+- xControls
+- ?Warnings
 
 Title
 - Deeltjesverteller
@@ -28,7 +28,7 @@ Title
 - Vederkerig
 
 
-LICENCES ETC!!!
+z LICENSES ETC!!!
 
 
 TEZOS SUMMIT??? Deadline April 14
@@ -37,10 +37,12 @@ Possible Hashes + Settings
 
 root folder screenshots
 
-This is an interactive and animated piece. You can use the mouse and scrollwheel on desktop, or touch controls on mobile, to shift the camera around. Because the wrap effect is happening in the screen space not in the world space, you might notice the wrapping makes rotating the scene a little unusual. 
+Thousands of particles are spread around a group of curves, the general shape of these curves is decided by the hash, but you can influence other things.
 
+This is an interactive and animated piece. You can use the mouse and scroll-wheel on desktop, or touch controls on mobile, to shift the camera around. Because the wrap effect is happening in the screen space not in the world space, you might notice the wrapping makes rotating the scene a little unusual.
 
-The particles are spread around a group of curves, the general shape of these curves is decided by the hash, but you can influence other things. 
+Some notes on the parameters:
+
 - The location of a particle can be "wrapped around" in space. The wrapping can be either horizontal or vertical (random), or both (Double wrap checkbox), and you can change the ranges of the wrapping behavior. The Wrap factor param mixes between the original position and the wrapped one.
 - The curves can either be a straight line from A to B, or a Bezier curve, the param Line factor decides how much of each.
 - Particle spread factor decides how far from the curve the particles can be spread.
@@ -51,3 +53,5 @@ The particles are spread around a group of curves, the general shape of these cu
 
 
 Made using Three.js and Liam Egan's fxhash-helpers. Their licenses are in fxhash-helpers-license.md and threejs-license.md
+
+2023 - Theo Horsmeier
