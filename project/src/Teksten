@@ -48,3 +48,6 @@ The particles are spread around a group of curves, the general shape of these cu
 - If you choose a palette, be aware of the shuffle checkbox. With shuffle turned on any one of the palette colors can be the background, and the rest is for the particles.
 - Be careful with the number of particles per curve and the total number of curves. More particles overall means some devices might have a harder time rendering this smoothly.
 - Different browser and hardware combinations seem to behave slightly different when it comes to the particle size. If Safari is your main browser, be careful with particle sizes below 20, they seem (almost) invisible!
+
+
+Made using Three.js and Liam Egan's fxhash-helpers. Their licenses are in fxhash-helpers-license.md and threejs-license.md
